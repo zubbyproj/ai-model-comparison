@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Model Comparison - Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="theme-transition" data-session-id="{{ session_id }}">
+    <header class="header">
+        <div class="container">
+            <h1>AI Model Comparison Tool</h1>
+            <div class="theme-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span>Dark Mode</span>
+            </div>
+        </div>
+    </header>
+
+    <button id="historyToggleBtn" class="history-toggle-btn" title="View Question History">📜</button>
+
+    <main class="container">
+        {% if errors %}
+        <div class="alert alert-error">
+            <strong>Some errors occurred:</strong>
+            <ul>
+                {% for error in errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="question-section">
+            <h2>Your Question:</h2>
+            <p class="question-text">{{ question }}</p>
+        </div>
+
+        <div class="view-toggle">
+            <h3>View Format</h3>
+            <div class="toggle-buttons">
+                <button type="button" id="gridView" class="toggle-button active">Grid View</button>
+                <button type="button" id="listView" class="toggle-button">List View</button>
+            </div>
+        </div>
+
+        <div id="results" class="results results-grid">
+            {% for name, response_data in responses.items() %}
+            <div class="ai-response" data-model="{{ name }}">
+                <h3>{{ name }}</h3>
+                <div class="model-info">
+                    <div class="model-tooltip">
+                        <p>{{ model_info[name]['description'] }}</p>
+                        <p><strong>Specialties:</strong></p>
+                        <ul>
+                            {% for specialty in model_info[name]['specialties'] %}
+                            <li>{{ specialty }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <p class="response-text">{{ response_data.response }}</p>
+                <div class="response-meta">
+                    <div class="confidence">
+                        Confidence: {{ "%.1f"|format(response_data.confidence * 100) }}%
+                    </div>
+                    <div class="response-time">
+                        Response Time: {{ "%.2f"|format(response_data.response_time) }}s
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <!-- Buttons will be added by JavaScript -->
+                </div>
+                <div class="vote-buttons">
+                    <button class="vote-button" data-vote="up" title="Helpful">👍</button>
+                    <button class="vote-button" data-vote="down" title="Not Helpful">👎</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="export-section">
+            <h3>Export Results</h3>
+            <div class="export-buttons">
+                <button class="export-button" data-format="pdf">Export as PDF</button>
+                <button class="export-button" data-format="json">Export as JSON</button>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 2rem;">
+            <a href="/" class="button">Ask Another Question</a>
+        </div>
+    </main>
+
+    <!-- History Panel -->
+    <div class="history-panel">
+        <div class="history-header">
+            <h3>Question History</h3>
+            <button class="close-history">&times;</button>
+        </div>
+        <div class="history-content">
+            <!-- History items will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- History Item Template -->
+    <template id="history-item-template">
+        <div class="history-item">
+            <div class="history-question">
+                <p class="question-text"></p>
+                <small class="timestamp"></small>
+            </div>
+            <div class="history-actions">
+                <button class="reuse-question" title="Ask this question again">
+                    <span>↺ Ask Again</span>
+                </button>
+                <button class="view-responses" title="View responses">
+                    <span>👁 View</span>
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <div class="toast-container">
+        <!-- Toast notifications will be inserted here by JS -->
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/features.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const sessionId = document.body.getAttribute('data-session-id');
+                const question = document.getElementById('question-text').textContent;
+                const responseElements = document.querySelectorAll('.ai-response');
+                
+                if (!responseElements.length) {
+                    console.error('No response elements found');
+                    return;
+                }
+
+                const responses = {};
+                responseElements.forEach(element => {
+                    if (!element.hasAttribute('data-model')) return;
+                    
+                    const modelName = element.getAttribute('data-model');
+                    const responseText = element.querySelector('.response-text').textContent;
+                    const confidence = parseFloat(element.querySelector('.confidence').textContent.match(/[\d.]+/)[0]) / 100;
+                    const responseTime = parseFloat(element.querySelector('.response-time').textContent.match(/[\d.]+/)[0]);
+                    
+                    responses[modelName] = {
+                        response: responseText,
+                        confidence: confidence,
+                        response_time: responseTime
+                    };
+                });
+
+                // Save to history with responses
+                if (window.historyManager) {
+                    window.historyManager.addQuestion(question, responses);
+                }
+
+            } catch (error) {
+                console.error('Error in results script:', error);
+            }
+        });
+    </script>
+</body>
+</html>

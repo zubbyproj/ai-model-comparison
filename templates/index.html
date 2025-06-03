@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Model Comparison</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="theme-transition">
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Processing your request...</p>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <h1>AI Model Comparison Tool</h1>
+            <div class="theme-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span>Dark Mode</span>
+            </div>
+        </div>
+    </header>
+
+    <button id="historyToggleBtn" class="history-toggle-btn" title="View Question History">📜</button>
+
+    <main class="container">
+        {% if not api_key_status.huggingface and not api_key_status.anthropic and not api_key_status.cohere %}
+        <div class="alert alert-warning">
+            <strong>Warning:</strong> No API keys are configured. Please set up at least one API key to use the models.
+        </div>
+        {% endif %}
+
+        <form id="questionForm" class="question-form" method="POST">
+            <div class="form-group">
+                <label for="question">Your Question:</label>
+                <textarea id="question" name="question" rows="5" maxlength="2000" required>{{ request.args.get('question', '') }}</textarea>
+                <div class="char-counter"><span>0</span>/2000</div>
+            </div>
+
+            <div class="ai-selection">
+                <h2>Select AI Models</h2>
+                <div class="checkbox-group">
+                    {% for model_name in ai_models.keys() %}
+                    <div class="checkbox-item">
+                        <div class="model-info">
+                            <input type="checkbox" id="{{ model_name|lower|replace(' ', '_') }}" 
+                                   name="ai_models" value="{{ model_name }}"
+                                   {% if (model_name.startswith('Cohere') and not api_key_status.cohere) or
+                                         (model_name == 'Claude-2' and not api_key_status.anthropic) or
+                                         (not model_name.startswith('Cohere') and model_name != 'Claude-2' and not api_key_status.huggingface) %}
+                                   disabled
+                                   {% endif %}>
+                            <label for="{{ model_name|lower|replace(' ', '_') }}">
+                                {{ model_name }}
+                                {% if (model_name.startswith('Cohere') and not api_key_status.cohere) or
+                                      (model_name == 'Claude-2' and not api_key_status.anthropic) or
+                                      (not model_name.startswith('Cohere') and model_name != 'Claude-2' and not api_key_status.huggingface) %}
+                                <span class="api-key-missing">(API Key Required)</span>
+                                {% endif %}
+                            </label>
+                            <div class="model-tooltip">
+                                <p>{{ model_info[model_name]['description'] }}</p>
+                                <p><strong>Avg. Response Time:</strong> {{ model_info[model_name]['avg_response_time'] }}</p>
+                                <p><strong>Specialties:</strong></p>
+                                <ul>
+                                    {% for specialty in model_info[model_name]['specialties'] %}
+                                    <li>{{ specialty }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% if (model_name.startswith('Cohere') and not api_key_status.cohere) or
+                                      (model_name == 'Claude-2' and not api_key_status.anthropic) or
+                                      (not model_name.startswith('Cohere') and model_name != 'Claude-2' and not api_key_status.huggingface) %}
+                                <p class="api-key-note">API key required to use this model</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="view-toggle">
+                <h3>Select View Format</h3>
+                <div class="toggle-buttons">
+                    <button type="button" id="gridView" class="toggle-button active">Grid View</button>
+                    <button type="button" id="listView" class="toggle-button">List View</button>
+                </div>
+            </div>
+
+            <button type="submit" class="button">Get AI Answers</button>
+        </form>
+    </main>
+
+    <!-- History Panel -->
+    <div class="history-panel">
+        <div class="history-header">
+            <h3>Question History</h3>
+            <button class="close-history">&times;</button>
+        </div>
+        <div class="history-content">
+            <!-- History items will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- History Item Template -->
+    <template id="history-item-template">
+        <div class="history-item">
+            <div class="history-question">
+                <p class="question-text"></p>
+                <small class="timestamp"></small>
+            </div>
+            <div class="history-actions">
+                <button class="reuse-question" title="Ask this question again">
+                    <span>↺ Ask Again</span>
+                </button>
+                <button class="view-responses" title="View responses">
+                    <span>👁 View</span>
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <div class="toast-container">
+        <!-- Toast notifications will be inserted here by JS -->
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/features.js') }}"></script>
+    
+    {% if error %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            toastManager.show("{{ error }}", "error");
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

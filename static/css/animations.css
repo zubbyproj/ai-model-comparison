@@ -1,0 +1,301 @@
+/* Loading Spinner */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--background-color);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+/* Animations */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-10px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toast {
+    background: white;
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.toast.success {
+    border-left: 4px solid #10B981;
+}
+
+.toast.error {
+    border-left: 4px solid #EF4444;
+}
+
+.toast.info {
+    border-left: 4px solid var(--primary-color);
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+    --primary-color: #3B82F6;
+    --secondary-color: #60A5FA;
+    --background-color: #1F2937;
+    --text-color: #F3F4F6;
+    --card-background: #374151;
+    --border-color: #4B5563;
+}
+
+[data-theme="dark"] .header,
+[data-theme="dark"] .question-form,
+[data-theme="dark"] .ai-response {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .loading-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Transitions */
+.theme-transition {
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Response Card Animations */
+.ai-response {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Character Counter */
+.character-counter {
+    font-size: 0.875rem;
+    color: #6B7280;
+    text-align: right;
+    margin-top: 0.25rem;
+}
+
+/* Copy Button */
+.copy-button {
+    position: static;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+}
+
+.copy-button:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* History Panel */
+.history-panel {
+    position: fixed;
+    right: -300px;
+    top: 0;
+    width: 300px;
+    height: 100vh;
+    background: white;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    z-index: 900;
+    overflow-y: auto;
+}
+
+.history-panel.active {
+    right: 0;
+}
+
+[data-theme="dark"] .history-panel {
+    background: var(--card-background);
+}
+
+/* Model Info Tooltip */
+.model-info {
+    position: relative;
+    display: inline-block;
+}
+
+.model-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    display: none;
+    z-index: 100;
+}
+
+.model-info:hover .model-tooltip {
+    display: block;
+}
+
+[data-theme="dark"] .model-tooltip {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+}
+
+/* Export Button */
+.export-button {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.export-button:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Share Button */
+.share-button {
+    position: absolute;
+    top: 1rem;
+    right: 3.5rem;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+}
+
+.share-button:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Share Menu */
+.share-menu {
+    position: absolute;
+    top: 100%;
+    right: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.75rem;
+    min-width: 200px;
+    z-index: 100;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.share-menu-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.share-menu-button:hover {
+    background: var(--background-color);
+}
+
+.share-menu-button i {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+.share-menu-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 0.5rem 0;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .share-menu {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .share-menu-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Action Buttons Container */
+.action-buttons {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Vote Buttons */
+.vote-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.vote-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.vote-button:hover,
+.vote-button.active {
+    opacity: 1;
+} 
