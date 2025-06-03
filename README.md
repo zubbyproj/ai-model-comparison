@@ -2,6 +2,9 @@
 
 A Flask-based web application that allows users to compare responses from multiple AI language models side by side. The application provides a modern, user-friendly interface with features like dark mode, model selection, and response sharing.
 
+## Live Demo
+You can try the application at: [Your Render URL after deployment]
+
 ## Features
 
 - Compare responses from multiple AI models simultaneously
@@ -27,14 +30,27 @@ A Flask-based web application that allows users to compare responses from multip
 - Falcon (TII)
 - MPT (MosaicML)
 - Pythia (EleutherAI)
+- Qwen3 (8B model)
+- DeepSeek R1
+- Qwen3 30B
+- Claude-2 (Anthropic)
+- Cohere Command
 
-## Prerequisites
+## Try It Yourself
+
+1. Visit the live demo at: [Your Render URL after deployment]
+2. Enter your question in the text area
+3. Select one or more AI models to compare
+4. Click "Get AI Answers" to see the responses
+
+## Local Development
+
+### Prerequisites
 
 - Python 3.8 or higher
 - pip (Python package installer)
-- Hugging Face API key
 
-## Installation
+### Installation
 
 1. Clone the repository:
 ```bash
@@ -56,63 +72,44 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. Create a `.env` file in the root directory with the following content:
+4. Create a `.env` file in the root directory:
 ```
+FLASK_ENV=development
 FLASK_SECRET_KEY=your_secret_key_here
 HUGGINGFACE_API_KEY=your_huggingface_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+COHERE_API_KEY=your_cohere_api_key_here
 MAX_TOKENS=512
 TEMPERATURE=0.7
 ```
 
-## Environment Variables
+### Running Locally
 
-- `FLASK_SECRET_KEY`: Secret key for Flask session management
-- `HUGGINGFACE_API_KEY`: Your Hugging Face API key (starts with 'hf_' or 'api_')
-- `MAX_TOKENS`: Maximum number of tokens in model responses (default: 512)
-- `TEMPERATURE`: Temperature parameter for response generation (default: 0.7)
-
-## Running the Application
-
-1. Ensure your virtual environment is activated
-2. Start the Flask server:
 ```bash
 python app.py
 ```
-3. Open your browser and navigate to `http://localhost:5000`
 
-## API Endpoints
+Visit `http://localhost:5000` in your browser.
 
-- `GET /`: Main application interface
-- `POST /`: Submit questions and get AI model responses
-- `GET /test-connections`: Test AI model API connections
-- `POST /vote`: Submit votes for model responses
-- `POST /export`: Export response data
-- `GET /share/<response_id>`: View shared responses
-- `POST /api/save-history`: Save response history
-- `GET /api/get-response-data/<session_id>`: Get specific response data
-- `GET /api/get-history`: Get all history items
-- `GET /view-responses/<session_id>`: View previous responses
+## Deploy Your Own Instance
 
-## Development
+1. Fork this repository
+2. Sign up for a free account at [Render.com](https://render.com)
+3. Create a new Web Service and connect your forked repository
+4. Add your API keys as environment variables:
+   - `HUGGINGFACE_API_KEY`
+   - `ANTHROPIC_API_KEY`
+   - `COHERE_API_KEY`
+5. Deploy!
 
-To run the application in debug mode:
-```bash
-export FLASK_ENV=development
-python app.py
-```
+## API Keys
 
-## Testing
+To use all features, you'll need API keys from:
+- [Hugging Face](https://huggingface.co/settings/tokens)
+- [Anthropic](https://www.anthropic.com/product)
+- [Cohere](https://dashboard.cohere.com/api-keys)
 
-Run the tests using:
-```bash
-python -m pytest tests/
-```
-
-## Security Notes
-
-- Never commit your `.env` file to version control
-- Keep your API keys secure and rotate them regularly
-- Use environment variables for all sensitive information
+The application will work with any combination of API keys - models will be disabled if their corresponding API key is not provided.
 
 ## Contributing
 
@@ -123,8 +120,8 @@ python -m pytest tests/
 
 ## License
 
-[Your chosen license]
+[MIT License](LICENSE)
 
 ## Support
 
-For support, please [create an issue](your-issue-tracker-url) or contact [your-contact-info]. 
+For support, please [create an issue](your-issue-tracker-url). 
