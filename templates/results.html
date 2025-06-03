@@ -50,33 +50,42 @@
         <div id="results" class="results results-grid">
             {% for name, response_data in responses.items() %}
             <div class="ai-response" data-model="{{ name }}">
-                <h3>{{ name }}</h3>
-                <div class="model-info">
-                    <div class="model-tooltip">
-                        <p>{{ model_info[name]['description'] }}</p>
-                        <p><strong>Specialties:</strong></p>
-                        <ul>
-                            {% for specialty in model_info[name]['specialties'] %}
-                            <li>{{ specialty }}</li>
-                            {% endfor %}
-                        </ul>
+                <div class="response-header">
+                    <h3>{{ name }}</h3>
+                    <div class="model-info">
+                        <div class="model-tooltip">
+                            <p>{{ model_info[name]['description'] }}</p>
+                            <p><strong>Specialties:</strong></p>
+                            <ul>
+                                {% for specialty in model_info[name]['specialties'] %}
+                                <li>{{ specialty }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <p class="response-text">{{ response_data.response }}</p>
-                <div class="response-meta">
-                    <div class="confidence">
-                        Confidence: {{ "%.1f"|format(response_data.confidence * 100) }}%
-                    </div>
-                    <div class="response-time">
-                        Response Time: {{ "%.2f"|format(response_data.response_time) }}s
-                    </div>
+
+                <div class="response-content">
+                    <div class="response-text">{{ response_data.response }}</div>
                 </div>
-                <div class="action-buttons">
-                    <!-- Buttons will be added by JavaScript -->
-                </div>
-                <div class="vote-buttons">
-                    <button class="vote-button" data-vote="up" title="Helpful">👍</button>
-                    <button class="vote-button" data-vote="down" title="Not Helpful">👎</button>
+
+                <div class="response-footer">
+                    <div class="response-meta">
+                        <div class="meta-item confidence">
+                            <span class="meta-label">Confidence:</span>
+                            <span class="meta-value">{{ "%.1f"|format(response_data.confidence * 100) }}%</span>
+                        </div>
+                        <div class="meta-item response-time">
+                            <span class="meta-label">Response Time:</span>
+                            <span class="meta-value">{{ "%.2f"|format(response_data.response_time) }}s</span>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <div class="vote-buttons">
+                            <button class="vote-button" data-vote="up" title="Helpful">👍</button>
+                            <button class="vote-button" data-vote="down" title="Not Helpful">👎</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% endfor %}

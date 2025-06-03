@@ -319,16 +319,16 @@ def get_claude_response(question):
         message = client.messages.create(
             model="claude-3-opus-20240229",
             max_tokens=int(os.environ.get('MAX_TOKENS', 512)),
-            messages=[
-                {"role": "user", "content": question}
-            ]
+            messages=[{"role": "user", "content": question}]
         )
         
         response_time = time.time() - start_time
         
-        # Handle the response in the latest format
+        # Extract the response text from the message
+        response_text = message.content[0].text if message.content else "No response generated"
+        
         return {
-            "response": message.content[0].text,
+            "response": response_text,
             "confidence": 0.95,
             "response_time": response_time
         }
